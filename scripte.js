@@ -1,208 +1,168 @@
-
         document.addEventListener('DOMContentLoaded', function() {
-         
             const themeToggle = document.getElementById('theme-toggle');
             const themeText = document.getElementById('theme-text');
             const themeIcon = document.getElementById('theme-icon');
-            const searchInput = document.getElementById('username');
             const searchBtn = document.getElementById('search-btn');
+            const usernameInput = document.getElementById('username');
             const errorMessage = document.getElementById('error-message');
-            const userCard = document.getElementById('user-card');
-            const initialState = document.getElementById('initial-state');
-            const loading = document.getElementById('loading');
+            const loadingEl = document.getElementById('loading');
+            const initialStateEl = document.getElementById('initial-state');
+            const userCardEl = document.getElementById('user-card');
             
-     
-            const avatar = document.getElementById('avatar');
-            const name = document.getElementById('name');
-            const login = document.getElementById('login');
-            const joined = document.getElementById('joined');
-            const bio = document.getElementById('bio');
-            const repos = document.getElementById('repos');
-            const followers = document.getElementById('followers');
-            const following = document.getElementById('following');
-            const locationElem = document.getElementById('location');
-            const blog = document.getElementById('blog');
-            const twitter = document.getElementById('twitter');
-            const company = document.getElementById('company');
+            const avatarEl = document.getElementById('avatar');
+            const nameEl = document.getElementById('name');
+            const loginEl = document.getElementById('login');
+            const joinedEl = document.getElementById('joined');
+            const bioEl = document.getElementById('bio');
+            const reposEl = document.getElementById('repos');
+            const followersEl = document.getElementById('followers');
+            const followingEl = document.getElementById('following');
+            const locationEl = document.getElementById('location');
+            const blogEl = document.getElementById('blog');
+            const twitterEl = document.getElementById('twitter');
+            const companyEl = document.getElementById('company');
             
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                themeText.textContent = 'فاتح';
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                themeText.textContent = 'مظلم';
-                localStorage.setItem('theme', 'light');
-            }
-     
             themeToggle.addEventListener('click', function() {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
+                document.body.classList.toggle('light-theme');
                 
-                if (currentTheme === 'dark') {
-                    document.documentElement.removeAttribute('data-theme');
-                    themeIcon.classList.remove('fa-sun');
-                    themeIcon.classList.add('fa-moon');
-                    themeText.textContent = 'مظلم';
-                    localStorage.setItem('theme', 'light');
+                if (document.body.classList.contains('light-theme')) {
+                    themeText.textContent = 'LIGHT';
+                    themeIcon.className = 'fas fa-sun';
                 } else {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    themeIcon.classList.remove('fa-moon');
-                    themeIcon.classList.add('fa-sun');
-                    themeText.textContent = 'فاتح';
-                    localStorage.setItem('theme', 'dark');
+                    themeText.textContent = 'DARK';
+                    themeIcon.className = 'fas fa-moon';
                 }
             });
             
-       
             searchBtn.addEventListener('click', searchUser);
-            
- 
-            searchInput.addEventListener('keypress', function(e) {
+            usernameInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     searchUser();
                 }
             });
             
-          
+            showInitialState();
+            
             function searchUser() {
-                const username = searchInput.value.trim();
+                const username = usernameInput.value.trim();
                 
                 if (!username) {
-                    showError('يرجى إدخال اسم مستخدم');
+                    showError('Please enter a username');
                     return;
                 }
                 
-             
-                hideError();
-                hideInitialState();
                 showLoading();
-                hideUserCard();
                 
-                // جلب بيانات المستخدم من GitHub API
+                clearError();
+                
                 fetch(`https://api.github.com/users/${username}`)
                     .then(response => {
                         if (!response.ok) {
                             if (response.status === 404) {
-                                throw new Error('المستخدم غير موجود');
-                            } else if (response.status === 403) {
-                                throw new Error('تم تجاوز حد طلبات API');
+                                throw new Error('User not found');
                             } else {
-                                throw new Error('حدث خطأ في الاتصال');
+                                throw new Error('Error fetching user data');
                             }
                         }
                         return response.json();
                     })
                     .then(data => {
-                        displayUser(data);
-                        hideLoading();
+                        updateUserCard(data);
                         showUserCard();
                     })
                     .catch(error => {
                         showError(error.message);
-                        hideLoading();
                         showInitialState();
                     });
             }
             
-  
-            function displayUser(userData) {
-              
-                avatar.src = userData.avatar_url;
-                avatar.alt = `صورة ${userData.login}`;
-                name.textContent = userData.name || userData.login;
-                login.textContent = `@${userData.login}`;
+            function updateUserCard(user) {
+                avatarEl.src = user.avatar_url || '';
+                avatarEl.alt = `${user.login}'s avatar`;
                 
-      
-                const joinDate = new Date(userData.created_at);
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                joined.textContent = `انضم في ${joinDate.toLocaleDateString('ar-SA', options)}`;
+                nameEl.textContent = user.name || user.login;
+                loginEl.textContent = `@${user.login}`;
                 
+                const joinDate = new Date(user.created_at);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                joinedEl.textContent = `Joined ${joinDate.toLocaleDateString('en-GB', options)}`;
                 
-                bio.textContent = userData.bio || 'هذا المستخدم ليس لديه نبذة تعريفية.';
+                bioEl.textContent = user.bio || 'This profile has no bio';
                 
-
-                repos.textContent = userData.public_repos.toLocaleString();
-                followers.textContent = userData.followers.toLocaleString();
-                following.textContent = userData.following.toLocaleString();
+                reposEl.textContent = user.public_repos || 0;
+                followersEl.textContent = user.followers || 0;
+                followingEl.textContent = user.following || 0;
                 
-             
-                updateLink(locationElem, userData.location, 'غير متوفر');
-                updateBlogLink(blog, userData.blog, 'غير متوفر');
-                updateTwitterLink(twitter, userData.twitter_username, 'غير متوفر');
-                updateLink(company, userData.company, 'غير متوفر');
-            }
-            
-           
-            function updateLink(element, value, placeholder) {
-                if (value) {
-                    element.classList.remove('unavailable');
-                    element.querySelector('span').textContent = value;
+                updateLink(locationEl, user.location, 'fas fa-map-marker-alt');
+                
+                if (user.blog) {
+                    const blogUrl = user.blog.startsWith('http') ? user.blog : `https://${user.blog}`;
+                    updateLink(blogEl, blogUrl, 'fas fa-link', true);
                 } else {
-                    element.classList.add('unavailable');
-                    element.querySelector('span').textContent = placeholder;
+                    updateLink(blogEl, 'Not Available', 'fas fa-link');
                 }
+                
+                updateLink(twitterEl, user.twitter_username ? `@${user.twitter_username}` : 'Not Available', 'fab fa-twitter');
+                
+                updateLink(companyEl, user.company || 'Not Available', 'fas fa-building');
             }
             
-       
-            function updateBlogLink(element, value, placeholder) {
-                if (value) {
+            function updateLink(element, text, iconClass, isLink = false) {
+                const icon = element.querySelector('i');
+                const span = element.querySelector('span');
+                
+                icon.className = iconClass;
+                span.textContent = text;
+                
+                if (isLink && text !== 'Not Available') {
                     element.classList.remove('unavailable');
-               
-                    const blogUrl = value.startsWith('http') ? value : `https://${value}`;
-                    element.innerHTML = `<i class="fas fa-link" aria-hidden="true"></i> <span><a href="${blogUrl}" target="_blank" rel="noopener noreferrer">${value.length > 20 ? value.substring(0, 20) + '...' : value}</a></span>`;
-                } else {
+                    span.innerHTML = `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+                } else if (text === 'Not Available') {
                     element.classList.add('unavailable');
-                    element.innerHTML = `<i class="fas fa-link" aria-hidden="true"></i> <span>${placeholder}</span>`;
-                }
-            }
-            
-       
-            function updateTwitterLink(element, value, placeholder) {
-                if (value) {
+                } else {
                     element.classList.remove('unavailable');
-                    element.innerHTML = `<i class="fab fa-twitter" aria-hidden="true"></i> <span><a href="https://twitter.com/${value}" target="_blank" rel="noopener noreferrer">@${value}</a></span>`;
-                } else {
-                    element.classList.add('unavailable');
-                    element.innerHTML = `<i class="fab fa-twitter" aria-hidden="true"></i> <span>${placeholder}</span>`;
                 }
-            }
-      
-            function showError(message) {
-                errorMessage.textContent = message;
-                errorMessage.style.display = 'block';
-            }
-            
-            function hideError() {
-                errorMessage.style.display = 'none';
             }
             
             function showLoading() {
-                loading.style.display = 'flex';
-            }
-            
-            function hideLoading() {
-                loading.style.display = 'none';
+                loadingEl.style.display = 'flex';
+                initialStateEl.style.display = 'none';
+                userCardEl.style.display = 'none';
             }
             
             function showInitialState() {
-                initialState.style.display = 'flex';
-            }
-            
-            function hideInitialState() {
-                initialState.style.display = 'none';
+                loadingEl.style.display = 'none';
+                initialStateEl.style.display = 'flex';
+                userCardEl.style.display = 'none';
             }
             
             function showUserCard() {
-                userCard.classList.add('visible');
+                loadingEl.style.display = 'none';
+                initialStateEl.style.display = 'none';
+                userCardEl.style.display = 'grid';
             }
             
-            function hideUserCard() {
-                userCard.classList.remove('visible');
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(clearError, 5000);
             }
             
-           
-            searchInput.focus();
+            function clearError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            function loadDefaultUser() {
+                fetch('https://api.github.com/users/octocat')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateUserCard(data);
+                        showUserCard();
+                    })
+                    .catch(() => {
+                        showInitialState();
+                    });
+            }
+            
+            loadDefaultUser();
         });

@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بحث عن مستخدم GitHub</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <link rel="stylesheet" href="style.css">
+    <title>devfinder - GitHub User Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
     <div class="container">
         <header>
             <h1>devfinder</h1>
             <div class="theme-switch">
-                <button id="theme-toggle" aria-labelتبديل وضع الألوان">
-                    <span id="theme-text">فاتح</span>
+                <button id="theme-toggle" aria-label="Toggle color mode">
+                    <span id="theme-text">DARK</span>
                     <i class="fas fa-moon" id="theme-icon"></i>
                 </button>
             </div>
@@ -24,75 +26,73 @@
             <div class="search-container">
                 <div class="search-input">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                    <input type="text" id="username" placeholder="ابحث عن مستخدم GitHub..." autocomplete="off" aria-label="اسم مستخدم GitHub">
-                    <button id="search-btn">بحث</button>
+                    <input type="text" id="username" placeholder="Search GitHub username..." autocomplete="off" aria-label="GitHub username">
+                    <button id="search-btn">Search</button>
                 </div>
                 <div class="error-message" id="error-message" role="alert"></div>
             </div>
 
             <div class="loading" id="loading">
                 <div class="spinner" aria-hidden="true"></div>
-                <p>جاري البحث عن المستخدم...</p>
+                <p>Searching for user...</p>
             </div>
 
             <div class="initial-state" id="initial-state">
                 <i class="fas fa-search" aria-hidden="true"></i>
-                <p>ابحث عن مستخدم GitHub باستخدام حقل البحث أعلاه</p>
+                <p>Search for a GitHub user using the search field above</p>
             </div>
 
             <div class="user-card" id="user-card">
                 <div class="user-avatar">
-                    <img id="avatar" src="" alt="صورة المستخدم">
+                    <img id="avatar" src="" alt="User avatar">
                 </div>
                 
                 <div class="user-info">
                     <div class="user-header">
-                        <h2 id="name"></h2>
-                        <span id="login"></span>
-                        <span id="joined"></span>
+                        <h2 id="name">The Octocat</h2>
+                        <span id="login">@octocat</span>
+                        <span id="joined">Joined 25 Jan 2011</span>
                     </div>
                     
-                    <p id="bio" class="user-bio"></p>
+                    <p id="bio" class="user-bio">This profile has no bio</p>
                     
                     <div class="user-stats">
                         <div class="stat">
-                            <span>المستودعات</span>
-                            <strong id="repos">0</strong>
+                            <span>Repos</span>
+                            <strong id="repos">8</strong>
                         </div>
                         <div class="stat">
-                            <span>المتابعون</span>
-                            <strong id="followers">0</strong>
+                            <span>Followers</span>
+                            <strong id="followers">3938</strong>
                         </div>
                         <div class="stat">
-                            <span>يتبع</span>
-                            <strong id="following">0</strong>
+                            <span>Following</span>
+                            <strong id="following">9</strong>
                         </div>
                     </div>
                     
                     <div class="user-links">
                         <div class="link" id="location">
                             <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                            <span>غير متوفر</span>
+                            <span>San Francisco</span>
                         </div>
                         <div class="link" id="blog">
                             <i class="fas fa-link" aria-hidden="true"></i>
-                            <span>غير متوفر</span>
+                            <span>https://github.blog</span>
                         </div>
                         <div class="link" id="twitter">
                             <i class="fab fa-twitter" aria-hidden="true"></i>
-                            <span>غير متوفر</span>
+                            <span>Not Available</span>
                         </div>
                         <div class="link" id="company">
                             <i class="fas fa-building" aria-hidden="true"></i>
-                            <span>غير متوفر</span>
+                            <span>@github</span>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-<source>
-    <script src="scripte.js"></script>
-
+<script src="scripte.js"></script>
 </body>
 </html>
